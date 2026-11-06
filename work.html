@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Release Test Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@125,800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* style.css */
+:root { --black: #000; --white: #f4f4f0; --dim: #a6a6a0; --line: #2c2c2a; --mark: #ff5a1f;
+  --display: Archivo, "Arial Black", Impact, sans-serif; --sans: "Space Grotesk", "Segoe UI", system-ui, Arial, sans-serif; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { margin: 0; overflow-x: hidden; background: var(--black); color: var(--white); font-family: var(--sans); font-size: 17px; line-height: 1.5; }
+h1, h2, p { margin: 0; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; }
+a { color: inherit; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--mark); outline-offset: 3px; }
+
+.nav { position: sticky; z-index: 10; top: 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0 16px; background: var(--black); padding: 12px clamp(18px, 3vw, 40px); font-size: 15px; }
+[data-page="Home"] .nav { position: fixed; left: 0; right: 0; background: none; mix-blend-mode: difference; }
+.nav a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
+.nav span { display: flex; flex-wrap: wrap; gap: 0 24px; }
+.nav [aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+
+.stage { position: relative; display: flex; flex-direction: column; justify-content: end; height: 100vh; min-height: 560px; overflow: hidden; }
+.stage img { position: absolute; inset: 0; opacity: 0; transform: scale(1.06); transition: opacity 1.2s, transform 7s linear; }
+.stage img.on { opacity: .82; transform: scale(1); }
+.stage::after { content: ""; position: absolute; inset: 40% 0 0; background: linear-gradient(transparent, #000); }
+.name { position: relative; overflow-wrap: anywhere; z-index: 1; padding: 0 clamp(14px, 2.4vw, 32px) 12px; font-family: var(--display); font-size: clamp(3.2rem, 12.6vw, 13rem); font-stretch: 125%; font-weight: 800; line-height: .86; letter-spacing: -.035em; text-transform: uppercase; }
+.line { position: relative; z-index: 1; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 24px; border-top: 1px solid rgba(255, 255, 255, .35); margin: 0 clamp(18px, 3vw, 40px); padding: 12px 0 22px; font-size: 15px; }
+
+.index { padding: clamp(70px, 10vw, 130px) clamp(18px, 3vw, 40px); }
+.label { margin-bottom: 26px; color: var(--mark); font-size: 15px; }
+.entry { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: baseline; gap: 16px; width: 100%; border: 0; border-top: 1px solid var(--line); background: none; padding: 16px 0; text-align: left; transition: color .2s, padding .3s; }
+.entry:last-child { border-bottom: 1px solid var(--line); }
+.entry i { color: var(--dim); font-size: 15px; font-style: normal; }
+.entry b { font-family: var(--display); font-size: clamp(1.8rem, 6vw, 5.4rem); font-stretch: 125%; font-weight: 800; line-height: 1; letter-spacing: -.03em; text-transform: uppercase; }
+.entry span { color: var(--dim); font-size: 15px; }
+.entry:hover, .entry:focus-visible { padding-left: 16px; color: var(--mark); }
+.peek { position: fixed; z-index: 5; right: 4vw; top: 50%; width: min(26vw, 340px); aspect-ratio: 4 / 5; overflow: hidden; opacity: 0; pointer-events: none; transform: translateY(-50%) rotate(3deg) scale(.94); transition: opacity .25s, transform .35s; }
+.peek.on { opacity: 1; transform: translateY(-50%) rotate(3deg) scale(1); }
+
+.strip { display: flex; gap: 12px; overflow-x: auto; padding: 0 clamp(18px, 3vw, 40px) 18px; scroll-snap-type: x mandatory; scrollbar-color: var(--line) transparent; }
+.shot { flex: none; width: min(70vw, 620px); height: min(70vh, 620px); overflow: hidden; border: 0; background: #111; padding: 0; scroll-snap-align: center; }
+.shot:nth-child(even) { width: min(52vw, 440px); margin-top: 7vh; height: min(60vh, 520px); }
+.shot img { transition: transform .8s cubic-bezier(.2, .7, .2, 1); }
+.shot:hover img { transform: scale(1.04); }
+
+.page-head { padding: clamp(60px, 9vw, 120px) clamp(18px, 3vw, 40px) 0; }
+.page-head h1 { overflow-wrap: anywhere; font-family: var(--display); font-size: clamp(3rem, 11vw, 11rem); font-stretch: 125%; font-weight: 800; line-height: .9; letter-spacing: -.035em; text-transform: uppercase; }
+.page-head p { max-width: 640px; margin-top: 20px; color: var(--dim); }
+.index.tight { padding-top: clamp(40px, 6vw, 70px); }
+.all { display: inline-flex; align-items: center; min-height: 44px; margin-top: 18px; color: var(--mark); font-weight: 500; text-decoration: none; }
+.all:hover { text-decoration: underline; }
+
+.service { display: grid; grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr); align-items: baseline; gap: 16px; border-top: 1px solid var(--line); padding: 24px 0; }
+.service:last-child { border-bottom: 1px solid var(--line); }
+.service i { color: var(--dim); font-size: 15px; font-style: normal; }
+.service h2 { font-family: var(--display); font-size: clamp(1.5rem, 3.6vw, 3rem); font-stretch: 125%; font-weight: 800; line-height: 1.02; letter-spacing: -.02em; text-transform: uppercase; }
+.service p { color: var(--dim); }
+
+.portrait { aspect-ratio: 4 / 5; overflow: hidden; background: #111; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(18px, 3vw, 40px); padding: 0 clamp(18px, 3vw, 40px) clamp(70px, 10vw, 130px); }
+.steps div { border-top: 1px solid var(--line); padding-top: 14px; }
+.steps b { display: block; margin-bottom: 6px; font-weight: 700; }
+.steps p { color: var(--dim); }
+
+.talk { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(26px, 5vw, 80px); padding: clamp(50px, 7vw, 90px) clamp(18px, 3vw, 40px); }
+.talk label { display: block; margin-bottom: 16px; color: var(--dim); font-size: 15px; }
+.talk input, .talk textarea { display: block; width: 100%; min-height: 48px; margin-top: 6px; border: 0; border-bottom: 1px solid var(--dim); border-radius: 0; background: none; padding: 10px 0; color: var(--white); font: inherit; }
+.talk input:focus, .talk textarea:focus { outline: 0; border-bottom-color: var(--mark); }
+.send { min-height: 48px; border: 0; background: var(--mark); padding: 10px 26px; color: #000; font-weight: 700; }
+.sent { margin-top: 16px; white-space: pre-wrap; color: var(--dim); }
+.reach .mail { font-size: clamp(1.2rem, 2.2vw, 2.2rem); letter-spacing: -.01em; text-transform: none; }
+.reach ul { margin: 22px 0 0; padding: 0; color: var(--dim); list-style: none; }
+
+.about { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(26px, 5vw, 80px); padding: clamp(80px, 11vw, 150px) clamp(18px, 3vw, 40px); }
+.about h2 { font-size: clamp(1.7rem, 3.6vw, 3.2rem); font-weight: 500; line-height: 1.12; letter-spacing: -.02em; }
+.contact { display: block; border-top: 1px solid var(--line); padding: clamp(40px, 7vw, 90px) clamp(18px, 3vw, 40px) 28px; }
+.mail { display: block; overflow-wrap: anywhere; font-family: var(--display); font-size: clamp(1.2rem, 6vw, 7.6rem); font-stretch: 125%; font-weight: 800; line-height: 1; letter-spacing: -.03em; text-decoration: none; text-transform: uppercase; transition: color .2s; }
+.mail:hover { color: var(--mark); }
+.small { margin-top: 26px; color: var(--dim); font-size: 14px; }
+.foot { margin: 0; padding: 0 clamp(18px, 3vw, 40px) 28px; }
+
+.light { position: fixed; z-index: 30; inset: 0; display: none; align-items: center; justify-content: center; background: #000; }
+.light.open { display: flex; }
+.light figure { width: min(92vw, 86vh); height: min(92vw, 86vh); margin: 0; }
+.light img { object-fit: contain; }
+.cap { position: absolute; left: 20px; bottom: 16px; font-size: 15px; }
+.ctl { position: absolute; width: 52px; height: 52px; border: 1px solid rgba(255, 255, 255, .4); border-radius: 50%; background: rgba(0, 0, 0, .55); font-size: 20px; }
+.ctl.x { top: 14px; right: 14px; }
+.ctl.prev { top: 50%; left: 14px; transform: translateY(-50%); }
+.ctl.next { top: 50%; right: 14px; transform: translateY(-50%); }
+
+@media (hover: none), (max-width: 900px) { .peek { display: none; } }
+@media (max-width: 700px) {
+  .entry { grid-template-columns: 34px minmax(0, 1fr); }
+  .entry span { grid-column: 2; }
+  .about, .talk, .steps { grid-template-columns: 1fr; }
+  .service { grid-template-columns: 34px minmax(0, 1fr); }
+  .service p { grid-column: 2; }
+  .shot, .shot:nth-child(even) { width: 82vw; height: 104vw; margin-top: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .stage img { transition: opacity .2s; transform: none; }
+  .stage img.on { transform: none; }
+  .entry, .peek, .shot img { transition: none; }
+}
+
+</style>
+</head>
+<body data-page="Work">
+<nav class="nav" aria-label="Main">
+  <a href="index.html" data-me="name">Release Test Portfolio</a>
+  <span><a href="work.html" aria-current="page">Work</a><a href="services.html">Services</a><a href="about.html">About</a><a href="contact.html">Contact</a></span>
+</nav>
+
+<main>
+  <section class="page-head">
+    <h1>Work</h1>
+    <p>Tap any title or photo to see it large.</p>
+  </section>
+
+  <section class="index tight">
+    <div id="list"></div>
+  </section>
+
+  <section class="strip" id="strip" aria-label="Gallery"></section>
+</main>
+
+<p class="small foot" id="foot"></p>
+<script>
+/* portfolio.js */
+// ===== EDIT YOUR PORTFOLIO HERE =====
+const ME = {
+  name: 'Release Test Portfolio',
+  role: 'Landscape and architecture photographer',
+  place: 'Based in Lahore, working across Pakistan',
+  about: 'I photograph the places that make Pakistan feel larger than a map. Slow work, long waits, and light that only lasts a minute.',
+  email: 'release-test@pakai.test',
+  aboutPhoto: 'images/skardu.webp'
+};
+
+// What you offer, on the Services page.
+const SERVICES = [
+  { title: 'Campaigns', text: 'Commercial and tourism work, from the first idea to the final selects.' },
+  { title: 'Architecture', text: 'Buildings and interiors, shot when the light suits them.' },
+  { title: 'Fine art prints', text: 'Signed, numbered prints, made to order.' }
+];
+
+// A file name uses our sample photos; a full web link uses your own.
+const WORK = [
+  { title: 'Hunza', kind: 'Mountains', year: '2026', image: 'images/hunza.webp' },
+  { title: 'Red arches', kind: 'Architecture', year: '2026', image: 'images/arches.webp' },
+  { title: 'Blue hour', kind: 'Coast', year: '2025', image: 'images/karachi.webp' },
+  { title: 'Thar', kind: 'Desert', year: '2025', image: 'images/thar.webp' },
+  { title: 'Kashi', kind: 'Detail', year: '2024', image: 'images/tile.webp' },
+  { title: 'Skardu', kind: 'Mountains', year: '2024', image: 'images/skardu.webp' }
+];
+// ===== END OF PORTFOLIO SETTINGS =====
+
+const PHOTOS = '';
+const photo = (name) => (/^https?:/.test(name) ? name : PHOTOS + name);
+const el = (id) => document.getElementById(id);
+const safe = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const two = (n) => String(n).padStart(2, '0');
+
+// Home: the photos turn slowly behind the name.
+if (el('stage')) {
+  el('stage').insertAdjacentHTML('afterbegin', WORK.map((w, i) =>
+    `<img src="${safe(photo(w.image))}" alt="" width="1024" height="1024"${i ? ' loading="lazy"' : ''}>`).join(''));
+  const slides = [...el('stage').querySelectorAll('img')];
+  let slide = 0;
+  slides[0].classList.add('on');
+  if (!calm) setInterval(() => {
+    slides[slide].classList.remove('on');
+    slide = (slide + 1) % slides.length;
+    slides[slide].classList.add('on');
+  }, 5000);
+}
+
+// The list of work. Home shows the first few, the Work page shows all of it.
+if (el('list')) {
+  const limit = Number(el('list').dataset.limit) || WORK.length;
+  el('list').innerHTML = WORK.slice(0, limit).map((w, i) => `
+    <button class="entry" type="button" data-show="${i}">
+      <i>${two(i + 1)}</i><b>${safe(w.title)}</b><span>${safe(w.kind)}, ${safe(w.year)}</span>
+    </button>`).join('');
+}
+if (el('strip')) {
+  el('strip').innerHTML = WORK.map((w, i) => `
+    <button class="shot" type="button" data-show="${i}" aria-label="Open ${safe(w.title)}">
+      <img src="${safe(photo(w.image))}" alt="${safe(w.title)}" loading="lazy" width="1024" height="1024">
+    </button>`).join('');
+}
+if (el('serviceList')) {
+  el('serviceList').innerHTML = SERVICES.map((s, i) => `
+    <div class="service"><i>${two(i + 1)}</i><h2>${safe(s.title)}</h2><p>${safe(s.text)}</p></div>`).join('');
+}
+if (el('aboutPhoto')) el('aboutPhoto').src = photo(ME.aboutPhoto);
+
+// One photo at a time, on any page with work on it.
+if (document.querySelector('#list, #strip')) {
+  document.body.insertAdjacentHTML('beforeend', `
+  <div class="peek" id="peek" aria-hidden="true"><img id="peekPhoto" alt=""></div>
+  <div class="light" id="light" role="dialog" aria-modal="true" aria-label="Photo">
+    <figure><img id="lightPhoto" alt=""></figure>
+    <p class="cap" id="cap"></p>
+    <button class="ctl x" id="lightClose" type="button" aria-label="Close">&times;</button>
+    <button class="ctl prev" id="lightPrev" type="button" aria-label="Previous photo">&larr;</button>
+    <button class="ctl next" id="lightNext" type="button" aria-label="Next photo">&rarr;</button>
+  </div>`);
+
+  let current = 0;
+  const showLight = (i) => {
+    current = (i + WORK.length) % WORK.length;
+    const w = WORK[current];
+    el('lightPhoto').src = photo(w.image);
+    el('lightPhoto').alt = w.title;
+    el('cap').textContent = `${w.title}, ${w.kind}, ${w.year}`;
+    el('light').classList.add('open');
+  };
+  const closeLight = () => el('light').classList.remove('open');
+
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-show]');
+    if (t) { el('peek').classList.remove('on'); showLight(Number(t.dataset.show)); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!el('light').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLight();
+    if (e.key === 'ArrowRight') showLight(current + 1);
+    if (e.key === 'ArrowLeft') showLight(current - 1);
+  });
+  el('lightClose').addEventListener('click', closeLight);
+  el('lightPrev').addEventListener('click', () => showLight(current - 1));
+  el('lightNext').addEventListener('click', () => showLight(current + 1));
+
+  // Hovering a title in the list floats its photo beside it.
+  if (el('list')) {
+    el('list').addEventListener('mouseover', (e) => {
+      const t = e.target.closest('[data-show]');
+      if (!t) return;
+      el('peekPhoto').src = photo(WORK[Number(t.dataset.show)].image);
+      el('peek').classList.add('on');
+    });
+    el('list').addEventListener('mouseleave', () => el('peek').classList.remove('on'));
+  }
+}
+
+// The form opens the visitor's own email app, and always shows what to send, in
+// case there is no email app to open.
+if (el('contactForm')) {
+  el('contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = el('msgName').value.trim();
+    const text = el('msgText').value.trim();
+    const sample = /@example\.com$/.test(ME.email);
+    if (!sample) window.location.href = `mailto:${ME.email}?subject=${encodeURIComponent(`A project from ${name}`)}&body=${encodeURIComponent(text)}`;
+    const done = el('msgDone');
+    done.textContent = sample
+      ? `This site has no email address yet. This is the message that would be sent:\n\n${text}\n\nFrom ${name}`
+      : `Your email app should open now. If it does not, write to ${ME.email}.`;
+    done.hidden = false;
+  });
+}
+
+const fill = { name: ME.name, role: ME.role, place: ME.place, about: ME.about, email: ME.email };
+document.querySelectorAll('[data-me]').forEach((n) => { n.textContent = fill[n.dataset.me]; });
+document.querySelectorAll('[data-mail]').forEach((n) => {
+  n.href = `mailto:${ME.email}`;
+  // A long address wraps after the @, not in the middle of a word.
+  const at = ME.email.indexOf('@') + 1;
+  if (at) n.replaceChildren(ME.email.slice(0, at), document.createElement('wbr'), ME.email.slice(at));
+});
+const page = document.body.dataset.page;
+document.title = page === 'Home' ? ME.name : `${page} | ${ME.name}`;
+el('foot').textContent = `${ME.name}. All photographs are the property of their maker.`;
+
+</script>
+</body>
+</html>
